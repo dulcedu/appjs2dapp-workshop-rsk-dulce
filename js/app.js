@@ -13,34 +13,92 @@ var app = new Vue({
         })
   },
     methods: {
-      closeModal: function () {
-        document.querySelector('div.modal').classList.remove('is-active')
+      // get the questions from swarm !!!
+      async initWeb3() {
+        await axios.get('http://localhost:8500/bzz-raw:/809b82283b3d0c3459fde4340ecb6a7a297b1d25e6cab6084d21257ba29e82c2')
+          .then(response => {
+            this.questions = response.data.questions
+          })
+
+        if (window.ethereum) {
+          this.web3Provider = window.ethereum
+          try {
+            // request account access
+            await window.ethereum.enable()
+          } catch (error) {
+            console.error("user denied account access")
+          }
+        } else if (window.web3) {
+          this.web3Provider = window.web3.currentProvider
+        } else {
+          this.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545')
+        }
+        // Inicialized web3 !!!
+        web3 = new Web3(this.web3Provider)
+
+        return this.initContract()
       },
-      
+      //Load the compiled contract information -> Quiz.json
+      initContract: function (params) {
+        return axios.get('../build/contracts/Quiz.json')
+          .then(response => {
+            const QuizArtifact = response.data
+            this.contracts.Quiz = TruffleContract(QuizArtifact)
+            // Set the provider for our contract
+            this.contracts.Quiz.setProvider(this.web3Provider)
+          })
+      },
       selectOption: function (evt) {
         if (evt) {
           document.querySelectorAll('div.answer').forEach(element => {
             element.classList.remove('answer') // disable css hover effect
           })
           const element = evt.target
-          const answer = element.dataset.key
+          const answer = element.dataset.i + 1
           const index =  parseInt(element.dataset.index) + 1
+
           const question = this.getQuestion(index)
           this.answers.push(answer)
           this.counter++
+
           if (this.counter === this.questions.length) {
             // show modal and return
             document.querySelector('div.modal').classList.add('is-active')
           }
+
           setTimeout(function () {
             // trigger click event on <a> next button
             document.querySelector('a[data-nav="next"]').click()
             document.querySelectorAll('div.option-box').forEach(element => {
               element.classList.add('answer') // enable css hover effect
             })
-          }, 1000)
+          }, 500) // Wait half second after answer each question.
         }
       },
+      sendQuestions: function () {
+        const contract = this.contracts.Quiz
+        web3.eth.getAccounts((error, accounts) => {
+          if (error) {
+            console.error(error)
+          }
+
+          const account = accounts[0]
+
+          this.contracts.Quiz.deployed()
+            .then(instance => {
+              const quizInstance = instance
+
+              return quizInstance.answerQuestions(this.answers, { from: account })
+            })
+            .then(result => {
+              document.querySelector('div.modal').classList.remove('is-active')
+            })
+            .catch(err => {
+              console.error(err)
+            })
+        })
+      },
+      //method that return the question by index
       getQuestion: function (index) {
         for (let i = 0; i < this.questions.length; i++) {
           if (index === this.questions[i].id) {
