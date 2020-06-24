@@ -5,3 +5,7 @@ div.tile.is-ancestor {
 .selected {
     background-color: lightgreen;
 }
+
+div.modal h2 {
+    color: white;
+}
