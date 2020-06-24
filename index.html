@@ -24,7 +24,7 @@
             <div class="level-right has-text-centered">
               <div class="level-item">
                 <div>
-                  <p class="heading">Hits</p>
+                  <p class="heading">Questions</p>
                   <p class="title">{{ counter }}/{{ questions.length }}</p>
                 </div>
               </div>
@@ -68,16 +68,15 @@
               <!-- /div.steps-actions -->
         </div>
         <div class="modal">
-            <div class="modal-background"></div>
-            <div class="modal-content">
-              <div class="has-text-centered">
-                <h2 class="title">Congratulations!!!</h2>
-                <h2 class="subtitle">You have {{ hits }} / {{ questions.length }} rigth answers</h2>
-                <button v-on:click="sendQuestions" class="button is-success">Ok</button>
-              </div>
+          <div class="modal-background"></div>
+          <div class="modal-content">
+            <div class="has-text-centered">
+              <h2 class="title">You have {{ hits }} right answers :)</h2>
+              <button v-on:click="closeModal" class="button is-success">Ok</button>
             </div>
-            <button class="modal-close is-large" aria-label="close" v-on:click="sendQuestions"></button>
           </div>
+          <button class="modal-close is-large" aria-label="close" v-on:click="closeModal"></button>
+        </div>
     </div>
   </section>
   <script src="js/truffle-contract.js"></script>

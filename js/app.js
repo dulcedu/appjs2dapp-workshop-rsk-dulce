@@ -4,7 +4,9 @@ var app = new Vue({
       counter: 0,
       answers: [],
       hits: 0,
-      questions: []
+      questions: [],
+      contracts: {},
+      web3Provider: null
     },
     mounted () {
       this.initWeb3()
@@ -50,20 +52,40 @@ var app = new Vue({
       },
       selectOption: function (evt) {
         if (evt) {
-          document.querySelectorAll('div.answer').forEach(element => {
-            element.classList.remove('answer') // disable css hover effect
-          })
+
           const element = evt.target
-          const answer = element.dataset.i + 1
+          const answer = parseInt(element.dataset.i) + 1
           const index =  parseInt(element.dataset.index) + 1
+
+          element.classList.add('selected')
 
           const question = this.getQuestion(index)
           this.answers.push(answer)
           this.counter++
 
           if (this.counter === this.questions.length) {
-            // show modal and return
-            document.querySelector('div.modal').classList.add('is-active')
+            const contract = this.contracts.Quiz
+            web3.eth.getAccounts((error, accounts) => {
+              if (error) {
+                console.error(error)
+              }
+
+              const account = accounts[0]
+
+              this.contracts.Quiz.deployed()
+                .then(instance => {
+                  const quizInstance = instance
+
+                  return quizInstance.answerQuestions(this.answers, { from: account })
+                })
+                .then(result => {
+                  this.hits = result.logs[0].args.hitsCounter.c[0]
+                  document.querySelector('div.modal').classList.add('is-active')
+                })
+                .catch(err => {
+                  console.error(err)
+                })
+            })
           }
 
           setTimeout(function () {
@@ -75,28 +97,8 @@ var app = new Vue({
           }, 500) // Wait half second after answer each question.
         }
       },
-      sendQuestions: function () {
-        const contract = this.contracts.Quiz
-        web3.eth.getAccounts((error, accounts) => {
-          if (error) {
-            console.error(error)
-          }
-
-          const account = accounts[0]
-
-          this.contracts.Quiz.deployed()
-            .then(instance => {
-              const quizInstance = instance
-
-              return quizInstance.answerQuestions(this.answers, { from: account })
-            })
-            .then(result => {
-              document.querySelector('div.modal').classList.remove('is-active')
-            })
-            .catch(err => {
-              console.error(err)
-            })
-        })
+      closeModal: function () {
+        document.querySelector('div.modal').classList.remove('is-active')
       },
       //method that return the question by index
       getQuestion: function (index) {
