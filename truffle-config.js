@@ -1,7 +1,16 @@
+const fs = require('fs');
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 require('dotenv').config();
 
 const A_MNEMONIC = process.env.A_MNEMONIC;
+
+const gasPriceTestnetRaw = fs.readFileSync(".gas-price-testnet.json").toString().trim();
+const gasPriceTestnet = parseInt(JSON.parse(gasPriceTestnetRaw).result, 16);
+if (typeof gasPriceTestnet !== 'number' || isNaN(gasPriceTestnet)) {
+  throw new Error('unable to retrieve network gas price from .gas-price-testnet.json');
+}
+
+console.log(gasPriceTestnet);
 
 /**
  * Use this file to configure your truffle project. It's seeded with some
