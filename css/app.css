@@ -1,0 +1,7 @@
+div.tile.is-ancestor {
+    margin-top: 0;
+}
+
+.selected {
+    background-color: lightgreen;
+}
