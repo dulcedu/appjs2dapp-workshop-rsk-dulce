@@ -1,4 +1,5 @@
-# App to live LIVE DEMO
+# App to dApp using RSK smart Contract and Swarm decentralize storage.
+
 by Dev Advocate Dulce Villarreal
 
 
@@ -25,6 +26,7 @@ by Dev Advocate Dulce Villarreal
   * [Adding web3.js](#Adding-web3.js)
   * [Getting the questions Second part](#Getting-the-questions-Second-part)
   * [Modify the front end](#Modify-the-front-end)
+  * [Last step!](#Last-step!)
 
 
 ## Pre-requisites or Set up
@@ -197,7 +199,7 @@ $ git clone https://github.com/rsksmart/quiz-dapp
 $ cd quiz-dapp
 ```
 
-### Install dependencies 
+### Install dependencies
 
 ```bash=
 $ npm install
@@ -209,11 +211,11 @@ $ npm install
 $ npm run start
 ```
 
-It should open a new tab in your browser. 
+It should open a new tab in your browser.
 
 Note the questions are stored in the `questions.json` file.
 
-### Architecture
+### Secuence diagram
 
 ![Diagrama de secuencia](/images/secuenceDiagram.png?raw=true)
 
@@ -243,7 +245,7 @@ Run swarm in a new terminal and don't close it.
 $ swarm
 ```
 
-Open a new terminal and upload your questions to swarm decentralized storage. When completed, swarm returns a hash. 
+Open a new terminal and upload your questions to swarm decentralized storage. When completed, swarm returns a hash.
 
 ```bash=
 $ cd js
