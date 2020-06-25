@@ -65,7 +65,7 @@ $ npm install -g truffle
 - In Mozilla use [Cors Everywhere](https://addons.mozilla.org/en-US/firefox/addon/cors-everywhere/)
 - In Chrome use [Allow CORS](https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf?hl=en)
 
-5.Swarm
+5. Swarm
 
 ## Installing Swarm
 
@@ -215,13 +215,7 @@ Note the questions are stored in the `questions.json` file.
 
 ### Architecture
 
-```sequence
-User -> FE: Load page
-FE -> FE: Get questions
-FE --> User: Page files (static)
-User -> FE: Submit responses
-FE --> User: Display results
-```
+![Diagrama de secuencia](/images/secuenceDiagram.png?raw=true)
 
 ## App to dApp
 
